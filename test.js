@@ -23,7 +23,10 @@ describe('Plugin', function() {
     plugin.compile({data: content, path: 'file.js'}).then(compiled => {
       expect(compiled.data).to.be.equal(expected);
       done();
-    }, error => expect(error).not.to.be.ok);
+    }, error => {
+      expect(error).not.to.be.ok;
+      done(error);
+    });
   });
 
   it('compiles and produces valid result and sourcemap', function(done) {
@@ -31,7 +34,7 @@ describe('Plugin', function() {
 
     var content = 'var a = 1;\nmodule.exports = a;';
     var expected = '(function (global, factory) {\n\ttypeof exports === \'object\' && typeof module !== \'undefined\' ? factory() :\n\ttypeof define === \'function\' && define.amd ? define(factory) :\n\t(factory());\n}(this, function () { \'use strict\';\n\n\tvar a = 1;\n\tmodule.exports = a;\n\n}));'
-    var expectedMap = '{"version":3,"file":null,"sources":["file.js"],"sourcesContent":["var a = 1;\\nmodule.exports = a;"],"names":[],"mappings":";;;;;;CAAA,IAAI,IAAI,CAAJ;AACJ,CAAA,OAAO,OAAP,GAAiB,CAAjB;;"}';
+    var expectedMap = '{"version":3,"file":null,"sources":["file.js"],"sourcesContent":["var a = 1;\\nmodule.exports = a;"],"names":[],"mappings":";;;;;;CAAA,IAAI,CAAC,GAAG,CAAC,CAAC;AACV,CAAA,MAAM,CAAC,OAAO,GAAG,CAAC,;;"}';
 
     plugin.compile({data: content, path: 'file.js'}).then(compiled => {
       expect(compiled).to.be.an('object');
@@ -40,6 +43,9 @@ describe('Plugin', function() {
       expect(compiled.map).to.be.a('string');
       expect(compiled.map).to.equal(expectedMap);
       done();
-    }, error => expect(error).not.to.be.ok);
+    }, error => {
+      expect(error).not.to.be.ok;
+      done(error);
+    });
   });
 });

@@ -1,22 +1,24 @@
 'use strict';
 const rollup = require('rollup');
-const babel = require('rollup-plugin-babel');
 const memory = require('rollup-plugin-memory');
 
 class RollupCompiler {
   constructor(config) {
     if (config == null) config = {};
-    const pluginConfig = config.plugins && config.plugins.rollup || {};
-    this.plugins = [
-      babel(pluginConfig.babel || config.babel || {})
-    ];
-    this.map = !!config.sourceMaps ? 'linked' : 'none';
+    var pluginConfig = config.plugins && config.plugins.rollup || {};
+    if (pluginConfig.entry) {
+      this.pattern = new RegExp(pluginConfig.entry);
+    }
+    this.config = pluginConfig;
+    this.extension = pluginConfig.extension || 'js';
+    delete pluginConfig.extension;
   }
 
   compile(params) {
     const path = params.path;
     const data = params.data;
-    const plugins = this.plugins.slice();
+    const config = this.config;
+    const plugins = (config.plugins || []).slice();
     plugins.push(memory({
       contents: data
     }));
@@ -25,8 +27,9 @@ class RollupCompiler {
       plugins: plugins
     }).then((bundle) => {
       const compiled = bundle.generate({
-        format: 'umd',
-        sourceMap: this.map
+        format: config.format || 'umd',
+        moduleName: config.moduleName,
+        sourceMap: config.sourceMap || 'none'
       });
       var code;
       if (this.map === 'linked') {
@@ -44,6 +47,5 @@ class RollupCompiler {
 
 RollupCompiler.prototype.brunchPlugin = true;
 RollupCompiler.prototype.type = 'javascript';
-RollupCompiler.prototype.extension = 'js';
 
 module.exports = RollupCompiler;
