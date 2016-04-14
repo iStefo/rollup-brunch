@@ -14,10 +14,21 @@ Or, do manual install:
 
 ## Configuration
 
-Currently there is no configuration for this plugin.
+Accepts the same options as rollup.
 
-The plugin chains `babel` to `rollup`, so rollup is always run
-with `rollup-plugin-babel`.
+### Example: Babel
+
+To use with Babel, install `rollup-plugin-babel` and `babel-preset-es2015-rollup` and configure brunch like this:
+
+```js
+plugins: {
+  rollup: {
+    plugins: [require('rollup-plugin-babel')({
+      presets: 'es2015-rollup'
+    })]
+  }
+}
+```
 
 ## License
 
