@@ -1,6 +1,7 @@
 'use strict';
 const rollup = require('rollup');
 const memory = require('rollup-plugin-memory');
+const pathResolve = require('path').resolve;
 
 class RollupCompiler {
   constructor(config) {
@@ -15,7 +16,7 @@ class RollupCompiler {
   }
 
   compile(params) {
-    const path = params.path;
+    const path = pathResolve(params.path); // this fixes an issue where using rollup plugins like typescript filters out the file
     const data = params.data;
     const config = this.config;
     const plugins = (config.plugins || []).slice();
